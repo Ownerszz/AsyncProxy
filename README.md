@@ -1,9 +1,12 @@
 # AsyncProxy
 
 This library aims to remove Future<> from the source code and instead replace it with a proxy that can get the value. 
-This library aims to make it easy to make async versions of the source class with almost no change (only change is replacing void methods with Void)
-This library allows methods to be run async withouth needing to think about the Thread(s).
-Make sure to read the java docs and see the examples
+
+This library aims to make it easy to make async versions of the source class with almost no change (only change is replacing void methods with Void).
+
+This library allows methods to be run async without needing to think about the Thread(s).
+
+<b>Make sure to read the java docs and see the examples.</b>
 
 ## Example from test
 
