@@ -1,4 +1,4 @@
-
+package core;
 
 import java.lang.reflect.Proxy;
 
@@ -31,7 +31,7 @@ public class AsyncProxy {
      */
     public static <T> T await(Object object) throws Throwable {
         if (!Proxy.isProxyClass(object.getClass()) && Proxy.getInvocationHandler(object).getClass() != InvocationResult.class){
-            throw new IllegalArgumentException("object must be an java.lang.reflect.proxy AND must have an InvocationResult as InvocationHandler");
+            throw new IllegalArgumentException("object must be an java.lang.reflect.proxy AND must have an core.InvocationResult as InvocationHandler");
         }
         InvocationResult handler = (InvocationResult) Proxy.getInvocationHandler(object);
         return (T) handler.getResult();
@@ -46,7 +46,7 @@ public class AsyncProxy {
      */
     public static void await(Void object) throws Throwable {
         if (!Proxy.isProxyClass(object.getClass()) && Proxy.getInvocationHandler(object).getClass() != InvocationResult.class){
-            throw new IllegalArgumentException("object must be an java.lang.reflect.proxy AND must have an InvocationResult as InvocationHandler");
+            throw new IllegalArgumentException("object must be an java.lang.reflect.proxy AND must have an core.InvocationResult as InvocationHandler");
         }
         InvocationResult handler = (InvocationResult) Proxy.getInvocationHandler(object);
         handler.getResult();

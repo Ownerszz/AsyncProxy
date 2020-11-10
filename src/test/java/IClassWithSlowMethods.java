@@ -1,3 +1,5 @@
+import core.MakeAsync;
+
 public interface IClassWithSlowMethods {
     @MakeAsync
     Object combineStringAndInt(int waitTimeInMilliseconds) throws InterruptedException;

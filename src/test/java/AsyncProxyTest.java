@@ -1,4 +1,5 @@
 
+import core.AsyncProxy;
 import org.junit.Before;
 import org.junit.Test;
 

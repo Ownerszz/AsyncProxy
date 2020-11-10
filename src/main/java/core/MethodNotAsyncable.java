@@ -1,3 +1,5 @@
+package core;
+
 public class MethodNotAsyncable extends Exception {
     public MethodNotAsyncable() {
     }

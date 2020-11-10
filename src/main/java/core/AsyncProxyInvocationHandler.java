@@ -1,3 +1,4 @@
+package core;
 
 import java.lang.reflect.InvocationHandler;
 
@@ -5,7 +6,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class AsyncProxyInvocationHandler implements InvocationHandler  {
     private final Object implementation;
