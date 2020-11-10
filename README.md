@@ -109,7 +109,7 @@ public final class WebhookService extends AbstractService {
 ``` java
  @Test
     public void testCreateAndDeleteWebHook() throws Throwable {
-        IWebhookService actual = getWebhookService(); 
+        WebhookService actual = getWebhookService(); 
         IWebhookService proxy = AsyncProxy.createProxy(actual);
         Object result = proxy.createWebHook(format("http://{0}:{1}" + ROOT_TRANSACTION,
                 "123.456.78.90", "80"),
