@@ -4,12 +4,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.concurrent.Future;
 
 import static org.junit.Assert.*;
 
 public class AsyncProxyTest {
     private ClassWithSlowMethods normalInstance;
-    private final int WAIT_TIME_MS =10000 ;
+    private final int WAIT_TIME_MS =500 ;
 
     @Before
     public void setup(){
@@ -135,5 +136,17 @@ public class AsyncProxyTest {
         assertTrue(test.objectEqualsThis());
         SomeObject object = test.getObject();
         assertEquals(test, object);
+    }
+
+    @Test
+    public void testReturnFuture() throws Throwable{
+        IClassWithSlowMethods proxy = AsyncProxy.createProxy(normalInstance, true);
+        SomeObject test = new SomeObject(normalInstance.getStringAttribute(), normalInstance.getIntAttribute());
+        long start = System.currentTimeMillis();
+        Future<SomeObject> result = (Future<SomeObject>) proxy.calculateObject(WAIT_TIME_MS);
+        int actualTime = (int) (System.currentTimeMillis() - start);
+        assertTrue("method calculateObject must run async", actualTime < WAIT_TIME_MS);
+        System.out.println("Time spent before \"getting\" the results: " + actualTime +"ms");
+        assertEquals(test, result.get());
     }
 }

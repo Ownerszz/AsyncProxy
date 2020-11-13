@@ -35,7 +35,7 @@ public class InvocationResult implements InvocationHandler {
 
     /**
      * Forces the current thread to block until the future is complete and sets the result.
-     * @throws Throwable
+     * @throws Throwable exception
      * @since 1.0
      */
     private void setResult() throws Throwable {
@@ -48,7 +48,7 @@ public class InvocationResult implements InvocationHandler {
     /**
      * Forces the current thread to block until the future is complete and sets the result.
      * @return result
-     * @throws Throwable
+     * @throws Throwable exception
      * @since 1.0
      */
     protected Object getResult() throws Throwable {

@@ -9,8 +9,14 @@ import java.util.concurrent.Executors;
 
 public class AsyncProxyInvocationHandler implements InvocationHandler  {
     private final Object implementation;
+    private final boolean returnFuture;
     public AsyncProxyInvocationHandler(Object instance) {
         implementation = instance;
+        this.returnFuture = false;
+    }
+    public AsyncProxyInvocationHandler(Object instance, boolean returnFuture) {
+        implementation = instance;
+        this.returnFuture = returnFuture;
     }
 
     @Override
@@ -28,7 +34,11 @@ public class AsyncProxyInvocationHandler implements InvocationHandler  {
             }
 
         });
-        return Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), method.getReturnType().getInterfaces(), new InvocationResult(completableFuture));
+        if (returnFuture){
+            return completableFuture;
+        }else {
+            return Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), method.getReturnType().getInterfaces(), new InvocationResult(completableFuture));
 
+        }
     }
 }
