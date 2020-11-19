@@ -71,7 +71,7 @@ public interface IWebhookService {
     @MakeAsync
     Object getWebHook(String id) throws Throwable;
     @MakeAsync
-    Void delete(String id) throws Throwable;
+    Object delete(String id) throws Throwable;
 }
 
 public final class WebhookService extends AbstractService {
