@@ -1,4 +1,4 @@
-import core.AsyncProxy;
+import ownerszz.libraries.async.proxy.core.AsyncProxyFactory;
 
 import java.util.Objects;
 import java.util.Random;
@@ -6,7 +6,7 @@ import java.util.Random;
 public class SomeObject {
     private String string;
     private int anInt;
-    private Object object;
+    private SomeObject object;
 
 
     public SomeObject(String stringAttribute, int intAttribute) {
@@ -22,7 +22,7 @@ public class SomeObject {
     public void setString(String s){
         string = s;
     }
-    public void setObject(Object o){
+    public void setObject(SomeObject o){
         object = o;
     }
 
@@ -33,10 +33,10 @@ public class SomeObject {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null) return false;
         SomeObject object = (SomeObject) o;
-        return anInt == object.anInt &&
-                Objects.equals(string, object.string);
+        return anInt == object.getAnInt() &&
+                Objects.equals(string, object.getString());
     }
 
     @Override
@@ -51,6 +51,6 @@ public class SomeObject {
         return anInt;
     }
     public SomeObject getObject() throws Throwable {
-        return AsyncProxy.await(object);
+        return object;
     }
 }

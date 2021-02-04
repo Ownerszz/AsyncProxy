@@ -1,4 +1,8 @@
-public class ClassWithSlowMethods implements IClassWithSlowMethods {
+import ownerszz.libraries.async.proxy.core.primitives.replacement.Wrapper;
+
+import java.util.concurrent.Future;
+
+public class ClassWithSlowMethods {
     private String stringAttribute;
     private int intAttribute;
 
@@ -25,6 +29,16 @@ public class ClassWithSlowMethods implements IClassWithSlowMethods {
     public Void throwException(int waitTimeInMilliseconds) throws Exception {
         Thread.sleep(waitTimeInMilliseconds);
         throw new Exception("test");
+    }
+
+    public Wrapper<String> combineStringAndIntAsync(int waitTimeInMilliseconds){
+        return null;
+    }
+    public SomeObject calculateObjectAsync(int waitTimeInMilliseconds){
+        return null;
+    }
+    public Void throwExceptionAsync(int waitTimeInMilliseconds) throws Exception {
+        return null;
     }
 
     public void setStringAttribute(String stringAttribute) {
