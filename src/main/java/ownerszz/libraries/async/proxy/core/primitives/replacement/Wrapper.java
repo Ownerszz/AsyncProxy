@@ -2,6 +2,10 @@ package ownerszz.libraries.async.proxy.core.primitives.replacement;
 
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Wrapper used for Primitive types.
+ * @param <T>
+ */
 public  class Wrapper<T> {
    private CompletableFuture<T> value;
    public Wrapper(CompletableFuture<T> value) {

@@ -1,4 +1,4 @@
-import ownerszz.libraries.async.proxy.core.AsyncProxyFactory;
+package ownerszz.libraries.async.proxy;
 
 import java.util.Objects;
 import java.util.Random;

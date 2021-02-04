@@ -1,3 +1,4 @@
+package ownerszz.libraries.async.proxy;
 
 import ownerszz.libraries.async.proxy.core.AsyncProxyFactory;
 import org.junit.Before;
@@ -5,7 +6,6 @@ import org.junit.Test;
 import ownerszz.libraries.async.proxy.core.primitives.replacement.Wrapper;
 
 import java.util.ArrayList;
-import java.util.concurrent.Future;
 
 import static org.junit.Assert.*;
 

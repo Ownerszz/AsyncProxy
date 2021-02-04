@@ -1,20 +1,30 @@
 plugins {
     id 'java'
+    id 'java-library'
+    id 'maven-publish'
 }
+def secretsFile = rootProject.file("secrets.properties");
+def secrets = new Properties()
+secrets.load(new FileInputStream(secretsFile))
 
 group 'ownerszz.libraries'
 version '1.0'
-
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
 repositories {
+    mavenLocal()
     mavenCentral()
     maven {
         name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/ownerszz/DependencyInjection")
+        url = uri("https://maven.pkg.github.com/ownerszz/AsyncProxy")
         credentials {
-            username = "ownerszz"
-            password = "70f4425f0d74367494c1126ef3ae97edc1bb75ac"
+            username = secrets['username']
+            password = secrets['key']
         }
     }
+
 }
 
 dependencies {
@@ -23,4 +33,42 @@ dependencies {
     implementation 'ownerszz.libraries:dependency-injection:2.3'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
+}
+
+task fatJar(type: Jar) {
+    manifest.from jar.manifest
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+    with jar
+    with javadocJar
+}
+
+task release(type: Copy){
+    dependsOn tasks.findByName("fatJar")
+    from file("${buildDir}/libs/async-proxy-${version}.jar")
+    into "${projectDir}/release"
+}
+
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/ownerszz/AsyncProxy")
+            credentials {
+                username = secrets['username']
+                password = secrets['key']
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    }
 }

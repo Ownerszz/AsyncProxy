@@ -216,4 +216,6 @@ gradle-app.setting
 ### Gradle Patch ###
 **/build/
 
+secrets.properties
+
 # End of https://www.toptal.com/developers/gitignore/api/jetbrains,gradle,java,intellij

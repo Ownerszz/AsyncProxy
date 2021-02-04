@@ -1,6 +1,6 @@
-import ownerszz.libraries.async.proxy.core.primitives.replacement.Wrapper;
+package ownerszz.libraries.async.proxy;
 
-import java.util.concurrent.Future;
+import ownerszz.libraries.async.proxy.core.primitives.replacement.Wrapper;
 
 public class ClassWithSlowMethods {
     private String stringAttribute;

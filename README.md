@@ -11,13 +11,13 @@ This library allows methods to be run async without needing to think about the T
 ## Example from test
 
 ``` java
-        ClassWithSlowMethods normalInstance = new ClassWithSlowMethods();
+        ownerszz.libraries.async.proxy.ClassWithSlowMethods normalInstance = new ownerszz.libraries.async.proxy.ClassWithSlowMethods();
         normalInstance.setStringAttribute("test");
         normalInstance.setIntAttribute(123);
         IClassWithSlowMethods proxy = AsyncProxy.createProxy(normalInstance);
         Object result = proxy.calculateObject(WAIT_TIME_MS);
         // Do some other stuff here
-        SomeObject object = AsyncProxy.await(result);
+        ownerszz.libraries.async.proxy.SomeObject object = AsyncProxy.await(result);
         object.getRandomInteger();
         object.setString(message);
         assertEquals(message, object.getString());

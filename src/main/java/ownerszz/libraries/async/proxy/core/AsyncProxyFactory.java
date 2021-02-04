@@ -15,7 +15,9 @@ public class AsyncProxyFactory {
      * Creates a proxy that will run methods ending with "Async" async.
      * The actual method will not be invoked.
      *
-     *
+     * @param instance The instance for which we will create a proxy for.
+     * @param <T> Type
+     * @throws Exception throws an exception when the supplied type is primitive or the return types of the async methods are primitive.
      * @since 1.1
      */
     public static <T> T createProxy(T instance) throws Exception{
