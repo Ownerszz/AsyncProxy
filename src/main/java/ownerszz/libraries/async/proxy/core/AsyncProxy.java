@@ -26,23 +26,20 @@ public class AsyncProxy {
     @RuntimeType
     public Object invoke(@This Object proxy, @Origin Method method, @AllArguments Object[] args) throws Throwable {
         Object toReturn;
-        if(method.getName().endsWith("Async")){
+        Method toInvoke = instance.getClass().getMethod(method.getName(),method.getParameterTypes());
+        if(toInvoke.isAnnotationPresent(RunAsync.class)){
             Class<?> clazz = method.getReturnType();
-            Method actualMethod = instance.getClass().getMethod(method.getName().substring(0,method.getName().length() - 5),method.getParameterTypes());
-            Class<?> actualClazz = actualMethod.getReturnType();
+            Class<?> actualClazz = toInvoke.getReturnType();
             CompletableFuture<Object> result = new CompletableFuture<>();
             Executors.newCachedThreadPool().submit(()->{
                 try {
-                    result.complete(actualMethod.invoke(instance, args));
-                    updateProxyToMatchImpl(proxy);
+                    result.complete(toInvoke.invoke(instance, args));
                 }catch (Exception e){
                     result.completeExceptionally(e);
+                }finally {
+                    updateProxyToMatchImpl(proxy);
                 }
             });
-            if(actualClazz == Void.class){
-                return null;
-            }
-
             if(actualClazz.isPrimitive() || actualClazz == String.class){
                 return PrimitivesUtil.createWrapperForPrimitiveType(result);
             }
@@ -56,18 +53,22 @@ public class AsyncProxy {
                     .getLoaded();
             toReturn = ObjenesisHelper.newInstance(proxyClass);
         }else {
-            toReturn = instance.getClass().getMethod(method.getName(),method.getParameterTypes()).invoke(instance,args);
+            toReturn = toInvoke.invoke(instance,args);
         }
         updateProxyToMatchImpl(proxy);
         return toReturn;
     }
 
-    private void updateProxyToMatchImpl(Object proxy) throws Exception {
+    private void updateProxyToMatchImpl(Object proxy) throws RuntimeException {
         Class proxyClass = proxy.getClass().getSuperclass();
         for (Field field:proxyClass.getDeclaredFields()) {
-            field.setAccessible(true);
-            Object implValue = field.get(instance);
-            field.set(proxy,implValue);
+            try {
+                field.setAccessible(true);
+                Object implValue = field.get(instance);
+                field.set(proxy,implValue);
+            }catch (Exception e){
+                throw new RuntimeException(e);
+            }
         }
 
     }

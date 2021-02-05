@@ -18,7 +18,7 @@ public class AsyncProxyFactory {
      * @param instance The instance for which we will create a proxy for.
      * @param <T> Type
      * @throws Exception throws an exception when the supplied type is primitive or the return types of the async methods are primitive.
-     * @since 1.1
+     * @since 1.0
      */
     public static <T> T createProxy(T instance) throws Exception{
         Class<T> clazz = (Class<T>) instance.getClass();
@@ -37,7 +37,7 @@ public class AsyncProxyFactory {
     private static void validateCLass(Class clazz) throws Exception{
         StringBuilder stringBuilder = new StringBuilder();
         for (Method method: clazz.getDeclaredMethods()) {
-            if( method.getName().endsWith("Async") && method.getReturnType().isPrimitive() && method.getReturnType() != Void.class){
+            if(method.isAnnotationPresent(RunAsync.class) && method.getReturnType().isPrimitive()){
                 stringBuilder.append(method.getName()).append(" has a primitive return type. Use Wrapper<").append(method.getReturnType()).append("> instead.").append("\n");
             }
         }

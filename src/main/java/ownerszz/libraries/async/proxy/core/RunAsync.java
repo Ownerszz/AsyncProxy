@@ -1,5 +1,4 @@
-package ownerszz.libraries.async.proxy.dependency.injection;
-import ownerszz.libraries.dependency.injection.core.Dependency;
+package ownerszz.libraries.async.proxy.core;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,7 +6,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Dependency
-public @interface MakeAsync {
+@Target(ElementType.METHOD)
+public @interface RunAsync {
 }

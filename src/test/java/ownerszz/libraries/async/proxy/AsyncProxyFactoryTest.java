@@ -32,18 +32,18 @@ public class AsyncProxyFactoryTest {
     public void testGetSlowMethod() throws Exception {
         ClassWithSlowMethods proxy = AsyncProxyFactory.createProxy(normalInstance);
         long start = System.currentTimeMillis();
-        Wrapper<String> result = proxy.combineStringAndIntAsync(WAIT_TIME_MS);
+        Wrapper<String> result = proxy.combineStringAndInt(WAIT_TIME_MS);
         int actualTime = (int) (System.currentTimeMillis() - start);
         assertTrue("method combineStringAndInt must run async", actualTime < WAIT_TIME_MS);
         System.out.println("Time spent before \"getting\" the result: " + actualTime +"ms");
-        assertEquals(result.getValue(), normalInstance.combineStringAndInt(WAIT_TIME_MS/1000));
+        assertEquals(result.getValue(), normalInstance.combineStringAndInt(WAIT_TIME_MS/1000).getValue());
     }
 
     @Test
     public void testCheckIfEquals() throws Exception{
         ClassWithSlowMethods proxy = AsyncProxyFactory.createProxy(normalInstance);
         long start = System.currentTimeMillis();
-        SomeObject result = proxy.calculateObjectAsync(WAIT_TIME_MS);
+        SomeObject result = proxy.calculateObject(WAIT_TIME_MS);
         int actualTime = (int) (System.currentTimeMillis() - start);
         assertTrue("method calculateObject must run async", actualTime < WAIT_TIME_MS);
         System.out.println("Time spent before \"getting\" the result: " + actualTime +"ms");
@@ -54,7 +54,7 @@ public class AsyncProxyFactoryTest {
     public void testAwaitObject() throws Throwable{
         ClassWithSlowMethods proxy = AsyncProxyFactory.createProxy(normalInstance);
         long start = System.currentTimeMillis();
-        SomeObject result = proxy.calculateObjectAsync(WAIT_TIME_MS);
+        SomeObject result = proxy.calculateObject(WAIT_TIME_MS);
         int actualTime = (int) (System.currentTimeMillis() - start);
         SomeObject normalObject = normalInstance.calculateObject(WAIT_TIME_MS/1000);
         assertTrue("method calculateObject must run async", actualTime < WAIT_TIME_MS);
@@ -72,11 +72,11 @@ public class AsyncProxyFactoryTest {
             ClassWithSlowMethods proxy = AsyncProxyFactory.createProxy(normalInstance);
 
             long start = System.currentTimeMillis();
-            Void result = proxy.throwExceptionAsync(WAIT_TIME_MS);
+            Wrapper<Void> result = proxy.throwException(WAIT_TIME_MS);
             int actualTime = (int) (System.currentTimeMillis() - start);
             assertTrue("method throwException must run async", actualTime < WAIT_TIME_MS);
             System.out.println("Time spent before \"getting\" the result: " + actualTime +"ms");
-            result.equals(null);
+            result.getValue();
         }catch (Exception e){
             System.out.println("Exception message: " + e.getMessage());
             throw e;
@@ -87,8 +87,8 @@ public class AsyncProxyFactoryTest {
     public void testRunTwoSlowMethods() throws Throwable{
         ClassWithSlowMethods proxy = AsyncProxyFactory.createProxy(normalInstance);
         long start = System.currentTimeMillis();
-        SomeObject result1 = proxy.calculateObjectAsync(WAIT_TIME_MS);
-        Wrapper<String> result2 = proxy.combineStringAndIntAsync(WAIT_TIME_MS);
+        SomeObject result1 = proxy.calculateObject(WAIT_TIME_MS);
+        Wrapper<String> result2 = proxy.combineStringAndInt(WAIT_TIME_MS);
         int actualTime = (int) (System.currentTimeMillis() - start);
         assertTrue("methods must run async", actualTime < WAIT_TIME_MS);
         System.out.println("Time spent before \"getting\" the results: " + actualTime +"ms");
@@ -104,7 +104,7 @@ public class AsyncProxyFactoryTest {
         int resultCount = 100;
         long start = System.currentTimeMillis();
         for (int i = 0; i < 100; i++) {
-            results.add(proxy.calculateObjectAsync(WAIT_TIME_MS));
+            results.add(proxy.calculateObject(WAIT_TIME_MS));
         }
         int actualTime = (int) (System.currentTimeMillis() - start);
         assertTrue("method calculateObject must run async; actual time = " + actualTime + "ms", actualTime < WAIT_TIME_MS * 10);
@@ -121,7 +121,7 @@ public class AsyncProxyFactoryTest {
         ClassWithSlowMethods proxy = AsyncProxyFactory.createProxy(normalInstance);
         SomeObject test = new SomeObject(normalInstance.getStringAttribute(), normalInstance.getIntAttribute());
         long start = System.currentTimeMillis();
-        SomeObject result = proxy.calculateObjectAsync(WAIT_TIME_MS);
+        SomeObject result = proxy.calculateObject(WAIT_TIME_MS);
         test.setObject(result);
         int actualTime = (int) (System.currentTimeMillis() - start);
         assertTrue("method calculateObject must run async", actualTime < WAIT_TIME_MS);
