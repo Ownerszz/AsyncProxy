@@ -6,6 +6,7 @@ import org.junit.Test;
 import ownerszz.libraries.async.proxy.core.primitives.replacement.Wrapper;
 
 import java.util.ArrayList;
+import java.util.concurrent.Future;
 
 import static org.junit.Assert.*;
 
@@ -131,5 +132,14 @@ public class AsyncProxyFactoryTest {
         assertEquals(test, object);
     }
 
+    @Test
+    public void testFutureAsReturnType() throws Throwable{
+        ClassWithSlowMethods proxy = AsyncProxyFactory.createProxy(normalInstance);
+        long start = System.currentTimeMillis();
+        Future<SomeObject> result = proxy.calcObject(WAIT_TIME_MS);
+        int actualTime = (int) (System.currentTimeMillis() - start);
+        assertTrue("method calcObject must run async", actualTime < WAIT_TIME_MS);
+        assertEquals(result.get(), normalInstance.calcObject(WAIT_TIME_MS / 1000).get());
+    }
 
 }

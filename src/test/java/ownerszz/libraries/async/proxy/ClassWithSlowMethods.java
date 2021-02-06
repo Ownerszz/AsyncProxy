@@ -3,6 +3,9 @@ package ownerszz.libraries.async.proxy;
 import ownerszz.libraries.async.proxy.core.RunAsync;
 import ownerszz.libraries.async.proxy.core.primitives.replacement.Wrapper;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
+
 public class ClassWithSlowMethods {
     private String stringAttribute;
     private int intAttribute;
@@ -31,6 +34,12 @@ public class ClassWithSlowMethods {
     public Wrapper<Void> throwException(int waitTimeInMilliseconds) throws Exception {
         Thread.sleep(waitTimeInMilliseconds);
         throw new Exception("test");
+    }
+
+    @RunAsync
+    public Future<SomeObject> calcObject(int waitTimeInMilliseconds) throws Exception{
+        Thread.sleep(waitTimeInMilliseconds);
+        return CompletableFuture.completedFuture(new SomeObject(stringAttribute,intAttribute));
     }
 
 

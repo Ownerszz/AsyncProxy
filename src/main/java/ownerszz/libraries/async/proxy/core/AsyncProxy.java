@@ -14,6 +14,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class AsyncProxy {
     private final Object instance;
@@ -33,7 +34,12 @@ public class AsyncProxy {
             CompletableFuture<Object> result = new CompletableFuture<>();
             Executors.newCachedThreadPool().submit(()->{
                 try {
-                    result.complete(toInvoke.invoke(instance, args));
+                    if(Future.class.isAssignableFrom(actualClazz)){
+                        Future task = (Future) toInvoke.invoke(instance, args);
+                        result.complete(task.get());
+                    }else {
+                        result.complete(toInvoke.invoke(instance, args));
+                    }
                 }catch (Exception e){
                     result.completeExceptionally(e);
                 }finally {
@@ -42,6 +48,8 @@ public class AsyncProxy {
             });
             if(actualClazz.isPrimitive() || actualClazz == String.class){
                 return PrimitivesUtil.createWrapperForPrimitiveType(result);
+            }else if(Future.class.isAssignableFrom(actualClazz)){
+                return result;
             }
             InvocationResult invocationResult = new InvocationResult(result);
             Class<?> proxyClass = new ByteBuddy()
