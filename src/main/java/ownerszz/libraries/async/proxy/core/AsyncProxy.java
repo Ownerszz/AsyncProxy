@@ -27,9 +27,22 @@ public class AsyncProxy {
     @RuntimeType
     public Object invoke(@This Object proxy, @Origin Method method, @AllArguments Object[] args) throws Throwable {
         Object toReturn;
-        Method toInvoke = instance.getClass().getMethod(method.getName(),method.getParameterTypes());
+        Class<?> instanceClass = instance.getClass();
+        boolean ok = false;
+        while (!ok){
+            if(instanceClass.getSimpleName().contains("$")){
+                if(instanceClass.getSuperclass() != null){
+                    instanceClass = instanceClass.getSuperclass();
+                }else {
+                    instanceClass = instanceClass.getInterfaces()[0];
+                }
+            }else {
+                ok= true;
+            }
+        }
+
+        Method toInvoke = instanceClass.getMethod(method.getName(),method.getParameterTypes());
         if(toInvoke.isAnnotationPresent(RunAsync.class)){
-            Class<?> clazz = method.getReturnType();
             Class<?> actualClazz = toInvoke.getReturnType();
             CompletableFuture<Object> result = new CompletableFuture<>();
             Executors.newCachedThreadPool().submit(()->{
@@ -54,10 +67,10 @@ public class AsyncProxy {
             InvocationResult invocationResult = new InvocationResult(result);
             Class<?> proxyClass = new ByteBuddy()
                     .with(new NamingStrategy.SuffixingRandom("invocationResult"))
-                    .subclass(clazz)
+                    .subclass(actualClazz)
                     .method(ElementMatchers.any()).intercept(MethodDelegation.to(invocationResult,InvocationResult.class))
                     .make()
-                    .load(clazz.getClassLoader(), ClassLoadingStrategy.Default.WRAPPER)
+                    .load(actualClazz.getClassLoader(), ClassLoadingStrategy.Default.WRAPPER)
                     .getLoaded();
             toReturn = ObjenesisHelper.newInstance(proxyClass);
         }else {
