@@ -9,9 +9,11 @@ import net.bytebuddy.matcher.ElementMatchers;
 import org.objenesis.ObjenesisHelper;
 import ownerszz.libraries.async.proxy.core.primitives.PrimitivesUtil;
 import ownerszz.libraries.dependency.injection.core.DependencyInstanstatior;
+import ownerszz.libraries.dependency.injection.core.ExceptionFlipper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -31,7 +33,7 @@ public class AsyncProxy {
         boolean ok = false;
         while (!ok){
             if(instanceClass.getSimpleName().contains("$")){
-                if(instanceClass.getSuperclass() != null){
+                if(instanceClass.getSuperclass() != null && !Proxy.isProxyClass(instanceClass)){
                     instanceClass = instanceClass.getSuperclass();
                 }else {
                     instanceClass = instanceClass.getInterfaces()[0];
@@ -54,7 +56,7 @@ public class AsyncProxy {
                         result.complete(toInvoke.invoke(instance, args));
                     }
                 }catch (Exception e){
-                    result.completeExceptionally(e);
+                    result.completeExceptionally(ExceptionFlipper.flipException(e));
                 }finally {
                     updateProxyToMatchImpl(proxy);
                 }

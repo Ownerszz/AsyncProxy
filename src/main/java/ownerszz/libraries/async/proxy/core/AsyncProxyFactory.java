@@ -20,13 +20,29 @@ public class AsyncProxyFactory {
      * @throws Exception throws an exception when the supplied type is primitive or the return types of the async methods are primitive.
      * @since 1.0
      */
-    public static <T> T createProxy(T instance) throws Exception{
-        Class<T> clazz = (Class<T>) instance.getClass();
-        validateCLass(clazz);
+    public static <T> T createProxy(Object instance) throws Exception{
+        Class clazz = instance.getClass();
+        if(Proxy.isProxyClass(instance.getClass())){
+            clazz = clazz.getInterfaces()[0];
+        }
+        boolean ok = false;
+        while (!ok){
+            if(clazz.getSimpleName().contains("$")){
+                if(clazz.getSuperclass() != null){
+                    clazz = (Class<? extends T>) clazz.getSuperclass();
+                }else {
+                   clazz = (Class<? extends T>) clazz.getInterfaces()[0];
+                }
+            }else {
+                ok= true;
+            }
+        }
+        Class<? extends T> castedClass = clazz;
+        validateCLass(castedClass);
         AsyncProxy asyncProxy = new AsyncProxy(instance);
         Class<? extends T> proxyClass = new ByteBuddy()
                 .with(new NamingStrategy.SuffixingRandom("asyncProxy"))
-                .subclass(clazz)
+                .subclass(castedClass)
                 .method(ElementMatchers.any()).intercept(MethodDelegation.to(asyncProxy,AsyncProxy.class))
                 .make()
                 .load(clazz.getClassLoader(), ClassLoadingStrategy.Default.WRAPPER)

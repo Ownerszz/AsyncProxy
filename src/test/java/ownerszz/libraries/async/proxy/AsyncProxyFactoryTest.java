@@ -79,7 +79,7 @@ public class AsyncProxyFactoryTest {
             System.out.println("Time spent before \"getting\" the result: " + actualTime +"ms");
             result.getValue();
         }catch (Exception e){
-            System.out.println("Exception message: " + e.getMessage());
+            e.printStackTrace();
             throw e;
         }
     }
